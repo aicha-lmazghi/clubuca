@@ -2,45 +2,46 @@
 
 namespace App\Repository;
 
-use App\Entity\TypeLocal;
+use App\Entity\Tarif;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method TypeLocal|null find($id, $lockMode = null, $lockVersion = null)
- * @method TypeLocal|null findOneBy(array $criteria, array $orderBy = null)
- * @method TypeLocal[]    findAll()
- * @method TypeLocal[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Tarif|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Tarif|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Tarif[]    findAll()
+ * @method Tarif[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TypeLocalRepository extends ServiceEntityRepository
+class TarifRepository extends ServiceEntityRepository
 {
     private $manager;
     public function __construct(ManagerRegistry $registry, EntityManagerInterface $manager)
-        {
-            parent::__construct($registry, TypeLocal::class);
-            $this->manager = $manager;
-        }
 
-            public function save(TypeLocal $type)
         {
-            $this->manager->persist($type);
+            parent::__construct($registry, Tarif::class);
+            $this->manager = $manager;
+
+        }
+            public function save(Tarif $tarif)
+        {
+            $this->manager->persist($tarif);
             $this->manager->flush();
         }
-         public function update(TypeLocal $type): TypeLocal
+         public function update(Tarif $tarif): Tarif
         {
-           $this->manager->persist($type);
+           $this->manager->persist($tarif);
            $this->manager->flush();
-           return $type;
+           return $tarif;
         } 
-        public function remove(TypeLocal $type)
+        public function remove(Tarif $tarif)
         {
-            $this->manager->remove($type);
+            $this->manager->remove($tarif);
             $this->manager->flush();
         }
 
     // /**
-    //  * @return TypeLocal[] Returns an array of TypeLocal objects
+    //  * @return Tarif[] Returns an array of Tarif objects
     //  */
     /*
     public function findByExampleField($value)
@@ -57,7 +58,7 @@ class TypeLocalRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?TypeLocal
+    public function findOneBySomeField($value): ?Tarif
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.exampleField = :val')

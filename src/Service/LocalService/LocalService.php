@@ -2,10 +2,12 @@
 
 namespace App\Service\LocalService;
 
-use App\Entity\Local;
 use App\Repository\LocalRepository;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 class LocalService{
 
     private $localRepository;
@@ -15,24 +17,17 @@ class LocalService{
         $this->localRepository = $localRepository;
         
     }
-    public function findAll():array{
-        $locals = $this->localRepository->findAll();
-        $data=[];
-        foreach ($locals as $local) {
-            $data[] = [
-              'id' => $local->getId(),
-              'Nom' => $local->getNom(),
-              'Description' => $local->getDescription(),
-              'Adresse' => $local->getAdresse(),
-              'Prix' => $local->getPrix(),
-              'Capacite' => $local->getCapacite(),
-              'Type' => $local->getType()
-             ];
-     }
-     return $data;
-
+   public function findAll():array{
+        $locaux = $this->localRepository->findAll();
+        $serializer = $this->serializer();
+                $jsonContent = $serializer->serialize($locaux, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
+                'nom', 'description', 'adresse','maxEnfant','maxAdulte','tarif' =>['id','nbrEnfant','nbrAdulte','prix'], 'type'=>['id','label','type']
+                ]]);
+                $result =  json_decode($jsonContent ,true);               
+                return $result ;
     }
-    public function add($data):int{
+
+   /* public function add($data):int{
         $newLocal = new Local();
 
         $newLocal
@@ -62,7 +57,6 @@ class LocalService{
               'Description' => $local->getDescription(),
               'Adresse' => $local->getAdresse(),
               'Prix' => $local->getPrix(),
-              'Capacite' => $local->getCapacite(),
               'Type' => $local->getType()
            ];
         return $data;
@@ -80,14 +74,48 @@ class LocalService{
         $updatedLocal = $this->localRepository->updateLocal($local);
         return $updatedLocal->toArray();
     }
-    public function delete($id):int{
-        $local = $this->localRepository->findOneBy(['id' => $id]);
-        if($local==null){
-          return -1;
+*/
+       public function serializer(){
+            $encoders = [new XmlEncoder(), new JsonEncoder()];
+            $normalizers = [new ObjectNormalizer()];
+            $serializer = new Serializer($normalizers, $encoders);
+            return $serializer;
         }
-  
-       $this->localRepository->removeLocal($local);
-       return 1;
-    }
+        //findByLocal
+         public function findByTypeLocal($id){
+                if(empty($id)){
+                    return null;
+                }
+                $locaux = $this->localRepository->findBy(
+                    ['type' => $id]
+            
+                );
+                $serializer = $this->serializer();
+                $jsonContent = $serializer->serialize($locaux, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
+                'nom', 'description', 'adresse','maxEnfant','maxAdulte','tarif' =>['id','nbrEnfant','nbrAdulte','prix'], 'type'=>['id','label','type']
+                ]]);
+                $result =  json_decode($jsonContent ,true);               
+                return $result ;
+        }
 
+         public function delete($id):int{
+                $local = $this->localRepository->findOneBy(['id' => $id]);
+                if($local==null){
+                return -1;
+                }
+        
+               $this->localRepository->removeLocal($local);
+               return 1;
+            }
+
+        public function findById($id){
+          if(empty($id)){
+              return null;
+          }
+            $local = $this->localRepository->findBy(
+                ['id' => $id]
+
+            );           
+            return $local ;
+        }
 }

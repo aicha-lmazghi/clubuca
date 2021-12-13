@@ -65,6 +65,11 @@ class UserService{
         return $data;
 
     }
+
+    public function getByNumAdesion($numAdesion){
+        $user = $this->userRepository->findOneBy(['numAdesion' => $numAdesion]);
+        return $user;
+    }
     public function getByAdesion($numAdesion): array{
         $user = $this->userRepository->findOneBy(['numAdesion' => $numAdesion]);
         if($user==null){

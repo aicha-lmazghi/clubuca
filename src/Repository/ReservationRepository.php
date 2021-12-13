@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Reservation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 /**
  * @method Reservation|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,16 +16,35 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ReservationRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $manager;
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $manager)
     {
         parent::__construct($registry, Reservation::class);
+        $this->manager = $manager;
+     
     }
 
+    public function saveReservation($newReservation)
+    {
+        $this->manager->persist($newReservation);
+        $this->manager->flush();
+        return $newReservation;
+    }   
+
+    public function remove(Reservation $reservation){
+        $this->manager->remove($reservation);
+        $this->manager->flush();
+    }
+    public function update(Reservation $reservation)
+    {
+       $this->manager->persist($reservation);
+       $this->manager->flush();
+    } 
     // /**
     //  * @return Reservation[] Returns an array of Reservation objects
     //  */
     /*
-    public function findByExampleField($value)
+    public function findByMembre($value)
     {
         return $this->createQueryBuilder('r')
             ->andWhere('r.exampleField = :val')

@@ -59,7 +59,7 @@ class LocalRepository extends ServiceEntityRepository
     {
            $this->manager->persist($local);
            $this->manager->flush();
-           return $user;
+           return $local;
     } 
     public function removeLocal(Local $local)
     {

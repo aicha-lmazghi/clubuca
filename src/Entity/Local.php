@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LocalRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,21 +27,25 @@ class Local
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $description;
+    
+    /**
+     * @ORM\Column(type="integer", length=255)
+     */
+    private $maxEnfant;
+     /**
+     * @ORM\Column(type="integer", length=255)
+     */
+    private $maxAdulte;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $adresse;
 
-    /**
-     * @ORM\Column(type="float")
+    /** 
+     * @ORM\OneToMany(targetEntity=Tarif::class, mappedBy="local")
      */
-    private $prix;
-
-    /**
-     * @ORM\OneToOne(targetEntity=Capacite::class, cascade={"persist", "remove"})
-     */
-    private $capacite;
+    private $tarif;
 
     /**
      * @ORM\ManyToOne(targetEntity=TypeLocal::class, inversedBy="locals")
@@ -63,7 +68,28 @@ class Local
 
         return $this;
     }
+    public function getMaxEnfant(): ?int
+    {
+        return $this->maxEnfant;
+    }
+    public function setMaxEnfant(?int $maxEnfant): self
+    {
+        $this->maxEnfant = $maxEnfant;
+        
+        return $this;
+    }
 
+    public function getMaxAdulte(): ?int
+    {
+         return  $this->maxAdulte;
+    }
+
+    public function setMaxAdulte(?int $maxAdulte): self
+    {
+        $this->maxAdulte = $maxAdulte;
+
+        return $this;
+    }
     public function getDescription(): ?string
     {
         return $this->description;
@@ -99,18 +125,36 @@ class Local
 
         return $this;
     }
-
-    public function getCapacite(): ?Capacite
+   /**
+     * @return Collection|Tarif[]
+     */
+    public function getTarif(): ?Collection
     {
-        return $this->capacite;
+        return $this->tarif;
     }
 
-    public function setCapacite(?Capacite $capacite): self
+    public function addTarif(Tarif $tarif): self
     {
-        $this->capacite = $capacite;
+        if (!$this->tarif->contains($tarif)) {
+            $this->tarif[] = $tarif;
+            $tarif->setLocal($this);
+        }
 
         return $this;
     }
+
+    public function removeResesrvationDetail(Tarif $tarif): self
+    {
+        if ($this->tarif->removeElement($tarif)) {
+            // set the owning side to null (unless already changed)
+            if ($tarif->getLocal() === $this) {
+                $tarif->setLocal(null);
+            }
+        }
+
+        return $this;
+    }
+
 
     public function getType(): ?TypeLocal
     {
@@ -123,4 +167,5 @@ class Local
 
         return $this;
     }
+   
 }

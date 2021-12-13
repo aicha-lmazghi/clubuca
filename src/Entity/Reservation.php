@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity(repositoryClass=ReservationRepository::class)
  */
@@ -20,7 +21,7 @@ class Reservation
     private $id;
 
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $dateReservation;
 
@@ -28,9 +29,9 @@ class Reservation
      * @ORM\Column(type="float", nullable=true)
      */
     private $total;
-
+    
     /**
-     * @ORM\OneToMany(targetEntity=ResesrvationDetail::class, mappedBy="reservation")
+     * @ORM\OneToMany(targetEntity=ResesrvationDetail::class, mappedBy="reservation",orphanRemoval=true)
      */
     private $resesrvationDetails;
 
@@ -50,12 +51,12 @@ class Reservation
         return $this->id;
     }
 
-    public function getDateReservation(): ?\DateTimeInterface
+    public function getDateReservation()
     {
         return $this->dateReservation;
     }
 
-    public function setDateReservation(?\DateTimeInterface $dateReservation): self
+    public function setDateReservation(?string $dateReservation): self
     {
         $this->dateReservation = $dateReservation;
 

@@ -23,12 +23,17 @@ class TypeLocal
      * @ORM\Column(type="string", length=255)
      */
     private $label;
-
+    
+    /**
+     * @ORM\Column(type="integer", length=255)
+     */
+    private $type;
     /**
      * @ORM\OneToMany(targetEntity=Local::class, mappedBy="type")
      */
     private $locals;
-
+    
+    
     public function __construct()
     {
         $this->locals = new ArrayCollection();
@@ -51,6 +56,17 @@ class TypeLocal
         return $this;
     }
 
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function setType(int $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
     /**
      * @return Collection|Local[]
      */
