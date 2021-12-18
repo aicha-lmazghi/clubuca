@@ -64,13 +64,17 @@ class TypeService{
         return $data;
     }
    
-    /*public function update($id,$data):array{
+    public function update($id,$data):array{
         $type = $this->typeRepository->findOneBy(['id' => $id]);
         $type->setLabel($data['label']);
         $type->setType($data['type']);
         $updatedType = $this->typeRepository->update($type);
-        return $updatedType->toArray();
-    }*/
+        $serializer = $this->serializer();
+        $jsonContent = $serializer->serialize($updatedType, 'json', [AbstractNormalizer::ATTRIBUTES => [
+        'id','label','type']]);
+        $result =  json_decode($jsonContent ,true); 
+        return $result;
+    }
     public function delete($id):int{
         $type = $this->typeRepository->findOneBy(['id' => $id]);
         if($type==null){

@@ -22,7 +22,7 @@ class LocalController extends AbstractController
     /**
      * @Route("/local", name="add_local", methods={"POST"})
      */
-    /*public function add(Request $request): JsonResponse
+   public function add(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         if($this->localService->add($data)==1){
@@ -31,7 +31,7 @@ class LocalController extends AbstractController
     
         return new JsonResponse(['status' => 'Local created!'], Response::HTTP_CREATED);
     }
-*/
+
     /**
          * @Route("/locals", name="get_all_locals", methods={"GET"})
     */
@@ -59,7 +59,7 @@ class LocalController extends AbstractController
     */
      public function getById($id): JsonResponse
      {
-        $data=$this->userService->getById($id);
+        $data=$this->localService->findById($id);
         $response=new JsonResponse($data, Response::HTTP_OK);
         $response->headers->set('Access-Control-Allow-Origin', '*');
         return $response;
@@ -68,13 +68,22 @@ class LocalController extends AbstractController
        /**
         * @Route("/local/{id}", name="update_local", methods={"PUT"})
         */
-       /* public function update($id, Request $request): JsonResponse
+       public function update($id, Request $request): JsonResponse
        {
          $data = json_decode($request->getContent(), true);
          $updatedLocal=$this->localService->update($id, $data);
          return new JsonResponse($updatedLocal, Response::HTTP_OK);
         }
-*/
+        /**
+        * @Route("/local/tarif/{id}", name="add_tarifs", methods={"PUT"})
+        */
+        public function addTarif($id, Request $request): JsonResponse
+        {
+          $data = json_decode($request->getContent(), true);
+          $updatedLocal=$this->localService->addTarifs($id, $data);
+          return new JsonResponse($updatedLocal, Response::HTTP_OK);
+         }
+ 
      /**
       * @Route("/local/{id}", name="delete_local", methods={"DELETE"})
      */

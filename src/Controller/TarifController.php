@@ -31,14 +31,13 @@ class TarifController extends AbstractController
     
         return new JsonResponse(['status' => 'Tarif dosnt created!'], Response::HTTP_FORBIDDEN);
     }
-/**
+    /**
      * @Route("/tarif/local/{idLocal}", name="add_tarif", methods={"GET"})
      */
     public function findByLocal($idLocal): JsonResponse
     {
-    
-        $this->tarifService->findByLocal($idLocal);
-        return new JsonResponse(['status' => 'Tarif created!'], Response::HTTP_CREATED);    
+        $tarifs=$this->tarifService->findByLocal($idLocal);
+        return new JsonResponse($tarifs, Response::HTTP_OK);    
     }
 
 }
