@@ -36,7 +36,7 @@ class ReservationController extends AbstractController
     /**
      * @Route("/reservation", name="get_reservations", methods={"GET"})
      */
-    public function findAll(): JsonResponse
+   public function findAll(): JsonResponse
     {  
         $data = $this->reservationService->findAll();
         $response = new JsonResponse($data, Response::HTTP_OK);
@@ -46,7 +46,7 @@ class ReservationController extends AbstractController
     /**
      * @Route("/reservation/id/{id}", name="delete_reservation", methods={"DELETE"})
      */
-    public function delete($id): JsonResponse
+   public function delete($id): JsonResponse
     {
         $result = $this->reservationService->delete($id);
         if($result == -1){
@@ -58,7 +58,7 @@ class ReservationController extends AbstractController
     /**
         * @Route("/reservation/idMembre/{id}", name="get_reservation_membre", methods={"GET"})
         */
-        public function getAllByMembre($id): JsonResponse
+       public function getAllByMembre($id): JsonResponse
        {
         
          $data = $this->reservationService->findByMembre($id);

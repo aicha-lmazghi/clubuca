@@ -113,18 +113,6 @@ class Local
 
         return $this;
     }
-
-    public function getPrix(): ?float
-    {
-        return $this->prix;
-    }
-
-    public function setPrix(float $prix): self
-    {
-        $this->prix = $prix;
-
-        return $this;
-    }
    /**
      * @return Collection|Tarif[]
      */

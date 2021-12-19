@@ -55,8 +55,12 @@ class TarifService{
            return 1;
        }
         public function findByLocal($idLocal){
-        $locaux = $this->tarifRepository->findBy(['local' => $idLocal]);
-        return $locaux;
+        $tarifs = $this->tarifRepository->findBy(['local' => $idLocal]);
+        $serializer = $this->serializer();
+        $jsonContent = $serializer->serialize($tarifs, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
+        'nbrAdulte', 'nbrEnfant', 'prix']]);
+        $result =  json_decode($jsonContent ,true);               
+        return $result ;
 
        }
 

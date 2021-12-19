@@ -31,22 +31,7 @@ class UserService{
      return $data;
 
     }
-    public function add($data):int{
-        $newUser = new User();
-
-        $newUser
-            ->setFirstName($data['firstName'])
-            ->setLastName($data['lastName'])
-            ->setEmail($data['email'])
-            ->setPhoneNumber($data['phoneNumber'])
-            ->setNumAdesion($data['numAdesion']);
-        
-         if (empty($newUser->getFirstName()) || empty($newUser->getLastName()) || empty($newUser->getEmail()) || empty($newUser->getPhoneNumber()) ||empty($newUser->getNumAdesion())) {
-                throw new NotFoundHttpException('Expecting mandatory parameters!');
-            }
-        $this->userRepository->saveUser($newUser);
-        return 1;
-    }
+    
     public function getById($id):array{
         $user = $this->userRepository->findOneBy(['id' => $id]);
         if($user==null){

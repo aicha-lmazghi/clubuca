@@ -3,7 +3,7 @@ namespace App\Service\ReservationService;
 use App\Entity\Reservation;
 use App\Repository\ReservationRepository;
 use App\Service\ReservationDetailService\ReservationDetailService;
-use App\Service\UserService\UserService;
+//use App\Service\UserService\UserService;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -12,12 +12,14 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class ReservationService  {
         private $reservationRepository;
-        private $userService;
+      //  private $userService;
 
-        public function __construct(ReservationRepository $reservationRepository , ReservationDetailService $reservationDetailService, UserService $userService)
+        public function __construct(ReservationRepository $reservationRepository , ReservationDetailService $reservationDetailService,
+        // UserService $userService
+        )
         {
             $this->reservationRepository = $reservationRepository;
-            $this->userService = $userService;
+           // $this->userService = $userService;
             $this->reservationDetailService = $reservationDetailService;
             
           
