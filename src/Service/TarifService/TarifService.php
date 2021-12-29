@@ -19,7 +19,6 @@ class TarifService{
     {
         $this->localService = $localService;
         $this->tarifRepository = $tarifRepository;
-        
     }
 
     public function serializer(){
@@ -54,6 +53,20 @@ class TarifService{
            $this->tarifRepository->save($newTarif);
            return 1;
        }
+       public function update($data,$id){
+        $tarif =  $this->tarifRepository->findOneBy(['id' =>$id]);
+
+        $tarif
+                 ->setNbrAdulte($data['nbrAdulte'])
+                 ->setNbrEnfant($data['nbrEnfant'])
+                 ->setPrix($data['prix']);
+        $this->tarifRepository->save($tarif);
+        $serializer = $this->serializer();
+        $jsonContent = $serializer->serialize($tarif, 'json', [AbstractNormalizer::ATTRIBUTES => ['id','nbrEnfant','nbrAdulte','prix']
+        ]);
+        $result =  json_decode($jsonContent ,true);   
+        return $result;
+    }
         public function findByLocal($idLocal){
         $tarifs = $this->tarifRepository->findBy(['local' => $idLocal]);
         $serializer = $this->serializer();
@@ -63,5 +76,14 @@ class TarifService{
         return $result ;
 
        }
+       public function delete($id):int{
+        $tarif = $this->tarifRepository->findOneBy(['id' => $id]);
+        if($tarif==null){
+        return -1;
+        }
+
+       $this->tarifRepository->remove($tarif);
+       return 1;
+    }
 
 }

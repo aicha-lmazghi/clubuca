@@ -32,12 +32,38 @@ class TarifController extends AbstractController
         return new JsonResponse(['status' => 'Tarif dosnt created!'], Response::HTTP_FORBIDDEN);
     }
     /**
-     * @Route("/tarif/local/{idLocal}", name="add_tarif", methods={"GET"})
+     * @Route("tarif/local/{idLocal}", name="find_tarif", methods={"GET"})
      */
     public function findByLocal($idLocal): JsonResponse
     {
         $tarifs=$this->tarifService->findByLocal($idLocal);
         return new JsonResponse($tarifs, Response::HTTP_OK);    
+    }
+     /**
+     * @Route("/tarif/id/{id}", name="update_tarif", methods={"PUT"})
+     */
+    public function update(Request $request,$id): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $tarif=$this->tarifService->update($data,$id); 
+    
+        return new JsonResponse(['status' => 'Tarif updated'], Response::HTTP_OK);
+    }
+     /**
+      * @Route("/tarif/id/{id}", name="delete_tarif", methods={"DELETE"})
+     */
+    public function delete($id): JsonResponse
+    {
+     
+     if($this->tarifService->delete($id)==-1){
+       $response=new JsonResponse(['status' => 'No Tarif with this id'], Response::HTTP_OK);
+       $response->headers->set('Access-Control-Allow-Origin', '*');
+       return $response;
+     }
+     $response=new JsonResponse(['status' => 'tarif deleted'], Response::HTTP_OK);
+     $response->headers->set('Access-Control-Allow-Origin', '*');
+
+     return $response;
     }
 
 }

@@ -22,7 +22,7 @@ class AuthController extends AbstractController
             'path' => 'src/Controller/AuthController.php',
         ]);
     }
-     /**
+    /**
      * @Route("/auth/register", name="register", methods={"POST"})
      */
     public function register(Request $request, UserPasswordEncoderInterface $encoder)
@@ -30,7 +30,7 @@ class AuthController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $password = $data['password'];
         $email = $data['email'];
-        $phoneNumber=$data['phoneNumber'];
+        $phoneNumber = $data['phoneNumber'];
         $user = new User();
         $user->setPhoneNumber($phoneNumber);
         $user->setPassword($encoder->encodePassword($user, $password));
@@ -43,27 +43,27 @@ class AuthController extends AbstractController
         ]);
     }
     /**
- * @Route("/auth/login", name="login", methods={"POST"})
- */
-public function login(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $encoder)
-{
-    $data = json_decode($request->getContent(), true);
+     * @Route("/auth/connect", name="connect", methods={"POST"})
+     */
+    public function connect(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $encoder)
+    {
+        $data = json_decode($request->getContent(), true);
         $user = $userRepository->findOneBy([
-                'email'=>$data['email'],
+            'email' => $data['email'],
         ]);
         if (!$user || !$encoder->isPasswordValid($user, $data['password'])) {
-                return $this->json([
-                    'message' => 'email or password is wrong.',
-                ]);
+            return $this->json([
+                'message' => 'email or password is wrong.',
+            ]);
         }
-       $payload = [
-           "user" => $data['email'],
-           "exp"  => (new \DateTime())->modify("+5 minutes")->getTimestamp(),
-       ];
+        $payload = [
+            "user" => $data['email'],
+            "exp"  => (new \DateTime())->modify("+5 minutes")->getTimestamp(),
+        ];
         $jwt = JWT::encode($payload, $this->getParameter('jwt_secret'), 'HS256');
         return $this->json([
             'message' => 'success!',
             'token' => sprintf('Bearer %s', $jwt),
         ]);
-}
+    }
 }
