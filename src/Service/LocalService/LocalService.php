@@ -17,7 +17,7 @@ class LocalService{
         $this->localRepository = $localRepository;
         
     }
-   public function findAll():array{
+    public function findAll():array{
         $locaux = $this->localRepository->findAll();
         $serializer = $this->serializer();
                 $jsonContent = $serializer->serialize($locaux, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
@@ -25,6 +25,11 @@ class LocalService{
                 ]]);
                 $result =  json_decode($jsonContent ,true);               
                 return $result ;
+    }
+    public function findByDisponibilite($nbrEnfant ,$nbrAdulte,$type, $dateFin , $dateDebut){
+            
+            $locaux = $this->localRepository->findLocalLibre($nbrEnfant, $nbrAdulte, $type, $dateFin, $dateDebut);       
+            return $locaux; 
     }
 
    /* public function add($data):int{

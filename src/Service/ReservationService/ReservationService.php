@@ -2,6 +2,7 @@
 namespace App\Service\ReservationService;
 use App\Entity\Reservation;
 use App\Repository\ReservationRepository;
+use App\Service\LocalService\LocalService;
 use App\Service\ReservationDetailService\ReservationDetailService;
 use App\Service\UserService\UserService;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -13,26 +14,35 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 class ReservationService  {
         private $reservationRepository;
         private $userService;
+        private $localService;
 
-        public function __construct(ReservationRepository $reservationRepository , ReservationDetailService $reservationDetailService, UserService $userService)
+        public function __construct(ReservationRepository $reservationRepository , ReservationDetailService $reservationDetailService,LocalService $localService, UserService $userService)
         {
             $this->reservationRepository = $reservationRepository;
             $this->userService = $userService;
             $this->reservationDetailService = $reservationDetailService;
+            $this->localService = $localService;
+
             
           
         }
 
         public function add($data):int{
-            $reservation = new Reservation();    
-            $currentDate = strtotime(date('d M Y H:i:s')); 
+            $nbrEnfant = $data['resesrvationDetails'][0]['nbrEnfant'];
+            $nbrAdulte = $data['resesrvationDetails'][0]['nbrAdulte'];
+            $type = $data['type']['id'];
+            $dateDebut = $data['resesrvationDetails'][0]['dateDebut'];
+            $dateFin = $data['resesrvationDetails'][0]['dateFin'];
+            $locaux = $this->localService->findByDisponibilite( $nbrEnfant, $nbrAdulte,$type,$dateFin ,$dateDebut);
+            if($locaux != null){
             $membre = $this->userService->getByNumAdesion($data['membre']['numAdesion']);
             $total = 0.0;
             if( $membre == null){
                    return -1;
             }   
             else{
-                 
+                $reservation = new Reservation();    
+                $currentDate = strtotime(date('d M Y H:i:s'));  
                 $reservation
                     ->setTotal($total)
                     ->setDateReservation($currentDate)
@@ -41,7 +51,7 @@ class ReservationService  {
                 
                 if(!empty($data['resesrvationDetails'])){
                 foreach ($data['resesrvationDetails'] as $item) {
-                  
+                    $item['local']['id'] = $locaux[0]['id']; 
                     $result = $this->reservationDetailService->add($item, $newReservation);
                     if($result[0]['code'] == 1){
                         $total  += $result[0]['result']->getPrixCalcule();
@@ -51,9 +61,15 @@ class ReservationService  {
                     $newReservation->setTotal($total);
                     $this->update($newReservation->getId(), $total);
                 
-            }
+                }
+            
             return 1;
             }
+        }
+        else{
+            return -2;
+        }
+
            
        }
 
