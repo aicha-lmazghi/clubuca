@@ -31,18 +31,7 @@ class UserController extends AbstractController
             'path' => 'src/Controller/LoginController.php',
         ]);
     }
-    /**
-     * @Route("/user", name="add_user", methods={"POST"})
-     */
-    public function add(Request $request): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-        if($this->userService->add($data)==1){
-            return new JsonResponse(['status' => 'User created!'], Response::HTTP_CREATED);
-        }
     
-        return new JsonResponse(['status' => 'User created!'], Response::HTTP_CREATED);
-    }
 
     /**
          * @Route("/users", name="get_all_users", methods={"GET"})
@@ -106,3 +95,4 @@ class UserController extends AbstractController
 
 
 }
+

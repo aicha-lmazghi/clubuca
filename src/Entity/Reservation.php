@@ -41,6 +41,11 @@ class Reservation
      */
     private $membre;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reservations")
+     */
+    private $member;
+
     public function __construct()
     {
         $this->resesrvationDetails = new ArrayCollection();
@@ -113,6 +118,18 @@ class Reservation
     public function setMembre(?User $membre): self
     {
         $this->membre = $membre;
+
+        return $this;
+    }
+
+    public function getMember(): ?User
+    {
+        return $this->member;
+    }
+
+    public function setMember(?User $member): self
+    {
+        $this->member = $member;
 
         return $this;
     }

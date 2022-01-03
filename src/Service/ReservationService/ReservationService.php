@@ -19,7 +19,7 @@ class ReservationService  {
         public function __construct(ReservationRepository $reservationRepository , ReservationDetailService $reservationDetailService,LocalService $localService, UserService $userService)
         {
             $this->reservationRepository = $reservationRepository;
-            $this->userService = $userService;
+           // $this->userService = $userService;
             $this->reservationDetailService = $reservationDetailService;
             $this->localService = $localService;
 

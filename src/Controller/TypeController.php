@@ -59,12 +59,12 @@ class TypeController extends AbstractController
        /**
         * @Route("/type/{id}", name="update_type", methods={"PUT"})
         */
-      /*  public function update($id, Request $request): JsonResponse
+        public function update($id, Request $request): JsonResponse
        {
          $data = json_decode($request->getContent(), true);
          $updatedType=$this->typeService->update($id, $data);
          return new JsonResponse($updatedType, Response::HTTP_OK);
-        }*/
+        }
 
      /**
       * @Route("/type/{id}", name="delete_type", methods={"DELETE"})
