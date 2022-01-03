@@ -27,9 +27,14 @@ class ReservationController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $result = $this->reservationService->add($data);
         if($result == -1){
-            return new JsonResponse(['status' => 'User dosnt exist!'], Response::HTTP_FORBIDDEN);
+            return new JsonResponse(['status' => 'User dosnt exist!', 'code'=>-1], Response::HTTP_OK);
         }
-            return new JsonResponse(['status' => 'Reservation created!'], Response::HTTP_CREATED);
+        if($result == -2){
+            return new JsonResponse(['status' => 'les locaux ne sont pas disponible !' ,'code'=>-2], Response::HTTP_OK);
+
+        }
+        if($result == 1)
+            return new JsonResponse(['status' => 'Reservation created!', 'code'=> 1], Response::HTTP_CREATED);
         
     }
 

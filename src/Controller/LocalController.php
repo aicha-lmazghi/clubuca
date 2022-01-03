@@ -52,7 +52,16 @@ class LocalController extends AbstractController
       $response = new JsonResponse($data, Response::HTTP_OK);
       return $response;
     }
-     
+     /**
+         * @Route("/locals/type/{type}/nbrEnfant/{nbrEnfant}/nbrAdulte/{nbrAdulte}/{dateFin}/{dateDebut}", name="get_all_locals_disp", methods={"GET"})
+    */
+    public function findByDispo($type, $nbrEnfant,$nbrAdulte,$dateFin, $dateDebut): JsonResponse
+    {
+      
+      $data = $this->localService->findByDisponibilite($nbrEnfant,$nbrAdulte,$type, $dateFin, $dateDebut);
+      $response = new JsonResponse($data, Response::HTTP_OK);
+      return $response;
+    }
     
       /**
      * @Route("/local/id/{id}", name="get_local_by_id", methods={"GET"})

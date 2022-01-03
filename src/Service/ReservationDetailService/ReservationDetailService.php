@@ -45,12 +45,12 @@ class ReservationDetailService {
                 $result =  json_decode($jsonContent ,true);              
                 return $result ;
         }
-        public function add($data , $reservation){
+        public function add($data, $reservation){
            
                 $newReservationDetail = new ResesrvationDetail(); 
                 //durée
-                $dateDebut =  strtotime($data['dateDebut']);
-                $dateFin = strtotime($data['dateFin']);                
+                $dateDebut =  $data['dateDebut'];
+                $dateFin = $data['dateFin'];                
                 $diff = $dateFin - $dateDebut;
                 $nbrJour =  round($diff / 86400);   
                 $result = [];
@@ -77,6 +77,7 @@ class ReservationDetailService {
                         }
                     }          
                 }
+
                 $prixCalcul =$prix * (float) $nbrJour;
                 $newReservationDetail
                                     ->setDateDebut($dateDebut)
