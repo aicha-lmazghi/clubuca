@@ -40,7 +40,7 @@ class TypeController extends AbstractController
        
        $data = $this->typeService->findAll();
        $response = new JsonResponse($data, Response::HTTP_OK);
-       //$response->headers->set('Access-Control-Allow-Origin', '*');
+       $response->headers->set('Access-Control-Allow-Origin', '*');
        return $response;
      }
 

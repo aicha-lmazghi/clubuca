@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Local;
+use App\Entity\ResesrvationDetail;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,20 +26,35 @@ class LocalRepository extends ServiceEntityRepository
     // /**
     //  * @return Local[] Returns an array of Local objects
     //  */
-    /*
-    public function findByExampleField($value)
+
+    public function findByExampleField($nbrEnfant , $nbrAdulte , $type)
     {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.maxEnfant >= :nbrEnfant')
+            ->andWhere('r.maxAdulte >= :nbrAdulte')
+            ->andWhere('r.type = :type')
+            ->setParameter('nbrEnfant', $nbrEnfant)
+            ->setParameter('nbrAdulte', $nbrAdulte)
+            ->setParameter('type', $type)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+        
+    public function findLocalLibre($nbrEnfant , $nbrAdulte , $type, $dateFin, $dateDebut)
+    {
 
+        $conn = $this->manager->getConnection();
+        $sql = 'SELECT * FROM local l  WHERE l.type_id = :type and l.max_enfant >= :nbrEnfant and l.max_adulte >= :nbrAdulte and l.id not in (select local_id from `resesrvation_detail` where date_fin >= :dateDebut and date_debut <= :dateFin);';
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue("type", $type);
+        $stmt->bindValue("nbrEnfant", $nbrEnfant);
+        $stmt->bindValue("nbrAdulte", $nbrAdulte);
+        $stmt->bindValue("dateDebut", $dateDebut);
+        $stmt->bindValue("dateFin", $dateFin);
+        $result = $stmt->executeQuery(); 
+        return $result->fetchAllAssociative();
+    }
     /*
     public function findOneBySomeField($value): ?Local
     {
