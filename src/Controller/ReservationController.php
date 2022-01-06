@@ -27,7 +27,7 @@ class ReservationController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $result = $this->reservationService->add($data);
         if($result == -1){
-            return new JsonResponse(['status' => 'User dosnt exist!'], Response::HTTP_FORBIDDEN);
+            return new JsonResponse(['status' => 'User dosnt exist!'], Response::HTTP_NOT_FOUND);
         }
             return new JsonResponse(['status' => 'Reservation created!'], Response::HTTP_CREATED);
         
@@ -64,6 +64,44 @@ class ReservationController extends AbstractController
          $data = $this->reservationService->findByMembre($id);
          $response = new JsonResponse($data, Response::HTTP_OK);
          return $response;
+
+        }
+        /**
+        * @Route("/reservation/etat/{etat}", name="get_reservation_etat", methods={"GET"})
+        */
+       public function getByEtat($etat): JsonResponse
+       {
+        
+         $data = $this->reservationService->findByEtat($etat);
+         $response = new JsonResponse($data, Response::HTTP_OK);
+         return $response;
+
+        }
+        /**
+        * @Route("/reservation/accept/{id}", name="get_reservation_accept", methods={"PUT"})
+        */
+       public function accept($id): JsonResponse
+       {
+        
+         $data = $this->reservationService->acceptReservation($id);
+         
+         if($data == -1){
+            return new JsonResponse(['status' => 'reservation dosent exist!'], Response::HTTP_FORBIDDEN);
+        }
+            return new JsonResponse(['status' => 'Reservation accepted!'], Response::HTTP_OK);
+
+        }
+        /**
+        * @Route("/reservation/deny/{id}", name="get_reservation_deny", methods={"PUT"})
+        */
+       public function deny($id): JsonResponse
+       {
+        
+         $data = $this->reservationService->denyReservation($id);
+         if($data == -1){
+            return new JsonResponse(['status' => 'reservation dosnt exist!'], Response::HTTP_FORBIDDEN);
+        }
+            return new JsonResponse(['status' => 'Reservation denied!'], Response::HTTP_OK);
 
         }
 

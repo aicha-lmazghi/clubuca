@@ -59,6 +59,10 @@ class UserService{
        $result =  json_decode($jsonContent ,true);   
         return $result;
     }
+    public function getByNumAdesion($numAdesion){
+        $user = $this->userRepository->findOneBy(['numAdesion' => $numAdesion]);
+        return $user;
+    }
     public function serializer(){
         $encoders = [new XmlEncoder(), new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];

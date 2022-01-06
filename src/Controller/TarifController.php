@@ -36,7 +36,7 @@ class TarifController extends AbstractController
      */
     public function findByLocal($idLocal): JsonResponse
     {
-        $tarifs=$this->tarifService->findByLocal($idLocal);
+        $tarifs=$this->tarifService->getByLocal($idLocal);
         return new JsonResponse($tarifs, Response::HTTP_OK);    
     }
      /**

@@ -77,6 +77,7 @@ class ReservationDetailService {
                         }
                     }          
                 }
+                
                 $prixCalcul =$prix * (float) $nbrJour;
                 $newReservationDetail
                                     ->setDateDebut($dateDebut)
