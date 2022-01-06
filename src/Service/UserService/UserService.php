@@ -65,6 +65,12 @@ class UserService{
         $serializer = new Serializer($normalizers, $encoders);
         return $serializer;
     }
+
+    public function getByNumAdesion($numAdesion){
+        $user = $this->userRepository->findOneBy(['numAdesion' => $numAdesion]);
+        return $user;
+    }
+    
     public function update($id,$data):array{
         $user = $this->userRepository->findOneBy(['id' => $id]);
         $role=$data['role'];
