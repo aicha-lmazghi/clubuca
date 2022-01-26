@@ -2,9 +2,10 @@
 namespace App\Service\ReservationService;
 use App\Entity\Reservation;
 use App\Repository\ReservationRepository;
-use App\Service\LocalService\LocalService;
+use App\Repository\UserRepository;
 use App\Service\ReservationDetailService\ReservationDetailService;
 use App\Service\UserService\UserService;
+use App\Service\LocalService\LocalService;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -14,13 +15,15 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 class ReservationService  {
         private $reservationRepository;
         private $userService;
+        private $userRepository;
         private $localService;
 
-        public function __construct(ReservationRepository $reservationRepository , ReservationDetailService $reservationDetailService,LocalService $localService, UserService $userService)
+        public function __construct(ReservationRepository $reservationRepository , ReservationDetailService $reservationDetailService,LocalService $localService, UserService $userService, UserRepository $userRepository)
         {
             $this->reservationRepository = $reservationRepository;
-           // $this->userService = $userService;
+            $this->userService = $userService;
             $this->reservationDetailService = $reservationDetailService;
+            $this->userRepository=$userRepository;
             $this->localService = $localService;
 
             
@@ -46,9 +49,9 @@ class ReservationService  {
                 $reservation
                     ->setTotal($total)
                     ->setDateReservation($currentDate)
-                    ->setMembre($membre);
+                    ->setMember($membre)
+                    ->setEtat(0);
                 $newReservation = $this->reservationRepository->saveReservation($reservation);
-                
                 if(!empty($data['resesrvationDetails'])){
                 foreach ($data['resesrvationDetails'] as $item) {
                     $item['local']['id'] = $locaux[0]['id']; 
@@ -75,7 +78,13 @@ class ReservationService  {
 
         public function findById($id){
             $reservation = $this->reservationRepository->findOneBy(['id' => $id]);
-            return $reservation;
+            $serializer = $this->serialiser();
+            $jsonContent = $serializer->serialize($reservation, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
+            'dateReservation', 'total','member'=>['id','numAdesion'], 
+            'resesrvationDetails' =>['id','dateDebut','dateFin','prixCalcule','local'=>['id','type'=>['label']],'nbrAdulte','nbrEnfant']
+            ]]);
+            $result =  json_decode($jsonContent ,true);
+            return $result;
         }
         public function serialiser(){
             $encoders = [new XmlEncoder(), new JsonEncoder()];
@@ -110,11 +119,39 @@ class ReservationService  {
 
         public function findByMembre($id){
             $reservations = $this->reservationRepository->findBy(
-                ['membre' => $id],
+                ['member' => $id],
         
             );
-                return $reservations;
+            $serializer = $this->serialiser();
+            $jsonContent = $serializer->serialize($reservations, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
+            'dateReservation', 'total','etat','member'=>['id','numAdesion'], 
+            'resesrvationDetails' =>['id','dateDebut','dateFin','prixCalcule','local'=>['id']]
+            ]]);
+            $result =  json_decode($jsonContent ,true);
+            return $result;
         }
+        public function findByEtat($etat){
+            $reservations = $this->reservationRepository->findBy(
+                ['etat' => $etat],
+        
+            );
+            
+            foreach ($reservations as $value){ 
+                if($value->getMember()!=null){
+                    $member=$this->userRepository->findOneBy(['id'=>$value->getMember()->getId()]);
+                    $value->setMember($member);
+                }
+                
+              } 
+            $serializer = $this->serialiser();
+            $jsonContent = $serializer->serialize($reservations, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
+            'dateReservation', 'total','etat','member'=>['id','numAdesion'], 
+            'resesrvationDetails' =>['id','dateDebut','dateFin','prixCalcule','local'=>['id']]
+            ]]);
+            $result =  json_decode($jsonContent ,true);
+            return $result;
+        }
+        
         public function update($id,$data){
             $reservation = $this->reservationRepository->findOneBy(['id' => $id]);
             if($reservation == null){
@@ -126,7 +163,31 @@ class ReservationService  {
             $this->reservationRepository->update($reservation);
             return 1;
         }
-    }
+        }
+        public function acceptReservation($id){
+            $reservation = $this->reservationRepository->findOneBy(['id' => $id]);
+            if($reservation == null){
+                return -2;
+            }
+            else{
+            $reservation
+                     ->setEtat(1);
+            $this->reservationRepository->update($reservation);
+            return 1;
+        }
+        }
+        public function denyReservation($id){
+            $reservation = $this->reservationRepository->findOneBy(['id' => $id]);
+            if($reservation == null){
+                return -2;
+            }
+            else{
+            $reservation
+                     ->setEtat(2);
+            $this->reservationRepository->update($reservation);
+            return 1;
+        }
+        }
 
 
 }

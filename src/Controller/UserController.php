@@ -34,7 +34,7 @@ class UserController extends AbstractController
     
 
     /**
-         * @Route("/users", name="get_all_users", methods={"GET"})
+         * @Route("/api/users", name="get_all_users", methods={"GET"})
     */
       public function getAll(): JsonResponse
      {
@@ -56,7 +56,7 @@ class UserController extends AbstractController
       }
 
       /**
-     * @Route("/user/id/{id}", name="get_user_id", methods={"GET"})
+     * @Route("/api/user/id/{id}", name="get_user_id", methods={"GET"})
     */
      public function getById($id): JsonResponse
      {
@@ -67,7 +67,7 @@ class UserController extends AbstractController
       }
 
        /**
-        * @Route("/user/{id}", name="update_user", methods={"PUT"})
+        * @Route("/api/user/{id}", name="update_user", methods={"PUT"})
         */
         public function update($id, Request $request): JsonResponse
        {
@@ -77,7 +77,7 @@ class UserController extends AbstractController
         }
 
      /**
-      * @Route("/user/{id}", name="delete_user", methods={"DELETE"})
+      * @Route("/api/user/{id}", name="delete_user", methods={"DELETE"})
      */
      public function delete($id): JsonResponse
      {

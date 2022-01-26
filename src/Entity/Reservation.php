@@ -37,14 +37,13 @@ class Reservation
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reservations")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $membre;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reservations")
      */
     private $member;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $etat;
 
     public function __construct()
     {
@@ -110,18 +109,6 @@ class Reservation
         return $this;
     }
 
-    public function getMembre(): ?User
-    {
-        return $this->membre;
-    }
-
-    public function setMembre(?User $membre): self
-    {
-        $this->membre = $membre;
-
-        return $this;
-    }
-
     public function getMember(): ?User
     {
         return $this->member;
@@ -130,6 +117,18 @@ class Reservation
     public function setMember(?User $member): self
     {
         $this->member = $member;
+
+        return $this;
+    }
+
+    public function getEtat(): ?int
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?int $etat): self
+    {
+        $this->etat = $etat;
 
         return $this;
     }

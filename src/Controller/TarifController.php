@@ -20,7 +20,7 @@ class TarifController extends AbstractController
     }
     
     /**
-     * @Route("/tarif", name="add_tarif", methods={"POST"})
+     * @Route("/api/tarif", name="add_tarif", methods={"POST"})
      */
     public function add(Request $request): JsonResponse
     {
@@ -32,15 +32,15 @@ class TarifController extends AbstractController
         return new JsonResponse(['status' => 'Tarif dosnt created!'], Response::HTTP_FORBIDDEN);
     }
     /**
-     * @Route("tarif/local/{idLocal}", name="find_tarif", methods={"GET"})
+     * @Route("/api/tarif/local/{idLocal}", name="find_tarif", methods={"GET"})
      */
     public function findByLocal($idLocal): JsonResponse
     {
-        $tarifs=$this->tarifService->findByLocal($idLocal);
+        $tarifs=$this->tarifService->getByLocal($idLocal);
         return new JsonResponse($tarifs, Response::HTTP_OK);    
     }
      /**
-     * @Route("/tarif/id/{id}", name="update_tarif", methods={"PUT"})
+     * @Route("/api/tarif/id/{id}", name="update_tarif", methods={"PUT"})
      */
     public function update(Request $request,$id): JsonResponse
     {
@@ -50,7 +50,7 @@ class TarifController extends AbstractController
         return new JsonResponse(['status' => 'Tarif updated'], Response::HTTP_OK);
     }
      /**
-      * @Route("/tarif/id/{id}", name="delete_tarif", methods={"DELETE"})
+      * @Route("/api/tarif/id/{id}", name="delete_tarif", methods={"DELETE"})
      */
     public function delete($id): JsonResponse
     {
