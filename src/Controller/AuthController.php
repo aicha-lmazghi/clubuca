@@ -74,7 +74,7 @@ class AuthController extends AbstractController
         }
         $payload = [
             "user" => $data['email'],
-            "exp"  => (new \DateTime())->modify("+60 minutes")->getTimestamp(),
+            "exp"  => (new \DateTime())->modify("+720 minutes")->getTimestamp(),
         ];
         $jwt = JWT::encode($payload, $this->getParameter('jwt_secret'), 'HS256');
         return $this->json([
@@ -93,7 +93,7 @@ class AuthController extends AbstractController
         ]);
         $payload = [
             "user" => $user->getEmail(),
-            "exp"  => (new \DateTime())->modify("+60 minutes")->getTimestamp(),
+            "exp"  => (new \DateTime())->modify("+720 minutes")->getTimestamp(),
         ];
         $jwt = JWT::encode($payload, $this->getParameter('jwt_secret'), 'HS256');
         return $this->json([
