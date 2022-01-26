@@ -20,7 +20,7 @@ class LocalController extends AbstractController
     }
     
     /**
-     * @Route("/local", name="add_local", methods={"POST"})
+     * @Route("/api/local", name="add_local", methods={"POST"})
      */
    public function add(Request $request): JsonResponse
     {
@@ -33,7 +33,7 @@ class LocalController extends AbstractController
     }
 
     /**
-         * @Route("/locals", name="get_all_locals", methods={"GET"})
+         * @Route("/api/locals", name="get_all_locals", methods={"GET"})
     */
       public function getAll(): JsonResponse
      {
@@ -43,7 +43,7 @@ class LocalController extends AbstractController
         return $response;
      }
      /**
-         * @Route("/locals/type/{type}", name="get_all_locals_type", methods={"GET"})
+         * @Route("/api/locals/type/{type}", name="get_all_locals_type", methods={"GET"})
     */
     public function findByType($type): JsonResponse
     {
@@ -64,7 +64,7 @@ class LocalController extends AbstractController
     }
     
       /**
-     * @Route("/local/id/{id}", name="get_local_by_id", methods={"GET"})
+     * @Route("/api/local/id/{id}", name="get_local_by_id", methods={"GET"})
     */
      public function getById($id): JsonResponse
      {
@@ -75,7 +75,7 @@ class LocalController extends AbstractController
       }
 
        /**
-        * @Route("/local/{id}", name="update_local", methods={"PUT"})
+        * @Route("/api/local/{id}", name="update_local", methods={"PUT"})
         */
        public function update($id, Request $request): JsonResponse
        {
@@ -84,7 +84,7 @@ class LocalController extends AbstractController
          return new JsonResponse($updatedLocal, Response::HTTP_OK);
         }
         /**
-        * @Route("/local/tarif/{id}", name="add_tarifs", methods={"PUT"})
+        * @Route("/api/local/tarif/{id}", name="add_tarifs", methods={"PUT"})
         */
         public function addTarif($id, Request $request): JsonResponse
         {
@@ -94,7 +94,7 @@ class LocalController extends AbstractController
          }
  
      /**
-      * @Route("/local/{id}", name="delete_local", methods={"DELETE"})
+      * @Route("/api/local/{id}", name="delete_local", methods={"DELETE"})
      */
      public function delete($id): JsonResponse
      {

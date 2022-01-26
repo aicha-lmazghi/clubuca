@@ -66,10 +66,11 @@ class ReservationDetailService {
                 else{   
                 $type = $local->getType()->getType();   
                 $tarifs = $this->tarifService->findByLocal($local->getId());
+                $prix=0;
                 if($type == 1){
                     $prix = $tarifs[0]->getPrix();
                 }   
-                if($type == 2){
+                else if($type == 2){
                     foreach($tarifs as $tarif){
                         if($tarif->getNbrAdulte() == $data['nbrAdulte'] && $tarif->getNbrEnfant() == $data['nbrEnfant']){
                             $prix = $tarif->getPrix();

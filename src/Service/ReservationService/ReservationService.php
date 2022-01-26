@@ -52,7 +52,6 @@ class ReservationService  {
                     ->setMember($membre)
                     ->setEtat(0);
                 $newReservation = $this->reservationRepository->saveReservation($reservation);
-                
                 if(!empty($data['resesrvationDetails'])){
                 foreach ($data['resesrvationDetails'] as $item) {
                     $item['local']['id'] = $locaux[0]['id']; 
@@ -79,7 +78,13 @@ class ReservationService  {
 
         public function findById($id){
             $reservation = $this->reservationRepository->findOneBy(['id' => $id]);
-            return $reservation;
+            $serializer = $this->serialiser();
+            $jsonContent = $serializer->serialize($reservation, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
+            'dateReservation', 'total','member'=>['id','numAdesion'], 
+            'resesrvationDetails' =>['id','dateDebut','dateFin','prixCalcule','local'=>['id','type'=>['label']],'nbrAdulte','nbrEnfant']
+            ]]);
+            $result =  json_decode($jsonContent ,true);
+            return $result;
         }
         public function serialiser(){
             $encoders = [new XmlEncoder(), new JsonEncoder()];
@@ -114,10 +119,16 @@ class ReservationService  {
 
         public function findByMembre($id){
             $reservations = $this->reservationRepository->findBy(
-                ['membre' => $id],
+                ['member' => $id],
         
             );
-                return $reservations;
+            $serializer = $this->serialiser();
+            $jsonContent = $serializer->serialize($reservations, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
+            'dateReservation', 'total','etat','member'=>['id','numAdesion'], 
+            'resesrvationDetails' =>['id','dateDebut','dateFin','prixCalcule','local'=>['id']]
+            ]]);
+            $result =  json_decode($jsonContent ,true);
+            return $result;
         }
         public function findByEtat($etat){
             $reservations = $this->reservationRepository->findBy(

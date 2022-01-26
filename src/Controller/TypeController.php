@@ -20,7 +20,7 @@ class TypeController extends AbstractController
     }
     
     /**
-     * @Route("/type", name="add_type", methods={"POST"})
+     * @Route("/api/type", name="add_type", methods={"POST"})
      */
     public function add(Request $request): JsonResponse
     {
@@ -33,7 +33,7 @@ class TypeController extends AbstractController
     }
 
     /**
-         * @Route("/types", name="get_all_types", methods={"GET"})
+         * @Route("/api/types", name="get_all_types", methods={"GET"})
     */
       public function getAll(): JsonResponse
      {
@@ -46,7 +46,7 @@ class TypeController extends AbstractController
 
     
       /**
-     * @Route("/type/id/{id}", name="get_type_by_id", methods={"GET"})
+     * @Route("/api/type/id/{id}", name="get_type_by_id", methods={"GET"})
     */
      public function getById($id): JsonResponse
      {
@@ -57,7 +57,7 @@ class TypeController extends AbstractController
       }
 
        /**
-        * @Route("/type/{id}", name="update_type", methods={"PUT"})
+        * @Route("/api/type/{id}", name="update_type", methods={"PUT"})
         */
         public function update($id, Request $request): JsonResponse
        {
@@ -67,7 +67,7 @@ class TypeController extends AbstractController
         }
 
      /**
-      * @Route("/type/{id}", name="delete_type", methods={"DELETE"})
+      * @Route("/api/type/{id}", name="delete_type", methods={"DELETE"})
      */
      public function delete($id): JsonResponse
      {

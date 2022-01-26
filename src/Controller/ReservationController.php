@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\ReservationService\ReservationService;
+use App\Service\UserService\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,10 +14,12 @@ class ReservationController extends AbstractController
 {
    
     private $reservationService;
+    private $userService;
 
-    public function __construct(ReservationService $reservationService )
+    public function __construct(ReservationService $reservationService ,UserService $userService)
     {
         $this->reservationService= $reservationService;
+        $this->userService=$userService;
     }
 
     /**
@@ -39,7 +42,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("/reservation", name="get_reservations", methods={"GET"})
+     * @Route("/reservations", name="get_reservations", methods={"GET"})
      */
    public function findAll(): JsonResponse
     {  
@@ -47,7 +50,18 @@ class ReservationController extends AbstractController
         $response = new JsonResponse($data, Response::HTTP_OK);
         return $response;
     }
-
+  /**
+     * @Route("/reservation/id/{id}", name="find_reservation_by_id", methods={"GET"})
+     */
+    public function findById($id): JsonResponse
+    {
+        $result = $this->reservationService->findById($id);
+        if($result ==null){
+            return new JsonResponse(['status' => 'reservation dosnt exist!'], Response::HTTP_FORBIDDEN);
+        }
+            return new JsonResponse($result, Response::HTTP_OK);
+    
+    }
     /**
      * @Route("/reservation/id/{id}", name="delete_reservation", methods={"DELETE"})
      */
@@ -61,12 +75,12 @@ class ReservationController extends AbstractController
     
     }
     /**
-        * @Route("/reservation/idMembre/{id}", name="get_reservation_membre", methods={"GET"})
+        * @Route("/api/reservation/idMembre/{adesion}", name="get_reservation_membre", methods={"GET"})
         */
-       public function getAllByMembre($id): JsonResponse
+       public function getAllByMembre($adesion): JsonResponse
        {
-        
-         $data = $this->reservationService->findByMembre($id);
+        $user=$this->userService->getByNumAdesion($adesion);
+         $data = $this->reservationService->findByMembre($user->getId());
          $response = new JsonResponse($data, Response::HTTP_OK);
          return $response;
 

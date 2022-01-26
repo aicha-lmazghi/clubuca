@@ -74,7 +74,26 @@ class AuthController extends AbstractController
         }
         $payload = [
             "user" => $data['email'],
-            "exp"  => (new \DateTime())->modify("+5 minutes")->getTimestamp(),
+            "exp"  => (new \DateTime())->modify("+60 minutes")->getTimestamp(),
+        ];
+        $jwt = JWT::encode($payload, $this->getParameter('jwt_secret'), 'HS256');
+        return $this->json([
+            'message' => 'success!',
+            'token' => sprintf('Bearer %s', $jwt),
+        ]);
+    }
+    /**
+     * @Route("/auth/connect/cli", name="connect_client", methods={"POST"})
+     */
+    public function connectClient(Request $request, UserRepository $userRepository, UserPasswordEncoderInterface $encoder)
+    {
+        $data = json_decode($request->getContent(), true);
+        $user = $userRepository->findOneBy([
+            'numAdesion' => $data['adhesion'],
+        ]);
+        $payload = [
+            "user" => $user->getEmail(),
+            "exp"  => (new \DateTime())->modify("+60 minutes")->getTimestamp(),
         ];
         $jwt = JWT::encode($payload, $this->getParameter('jwt_secret'), 'HS256');
         return $this->json([
