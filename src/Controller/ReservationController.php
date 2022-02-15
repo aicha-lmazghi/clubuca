@@ -96,6 +96,17 @@ class ReservationController extends AbstractController
          return $response;
 
         }
+         /**
+        * @Route("/reservation/etat/{etat}/type/{type}", name="get_reservation_etat_type", methods={"GET"})
+        */
+       public function getByEtatAndType($etat,$type): JsonResponse
+       {
+        
+         $data = $this->reservationService->findByEtatAndType($etat,$type);
+         $response = new JsonResponse($data, Response::HTTP_OK);
+         return $response;
+
+        }
         /**
         * @Route("/reservation/accept/{id}", name="get_reservation_accept", methods={"PUT"})
         */
@@ -123,6 +134,19 @@ class ReservationController extends AbstractController
             return new JsonResponse(['status' => 'Reservation denied!'], Response::HTTP_OK);
 
         }
+         /**
+        * @Route("/reservation/annuler/{id}", name="get_reservation_annuler", methods={"PUT"})
+        */
+       public function annuler($id): JsonResponse
+       {
+        
+         $data = $this->reservationService->annulerReservation($id);
+         if($data == -1){
+            return new JsonResponse(['status' => 'reservation dosnt exist!'], Response::HTTP_FORBIDDEN);
+        }
+            return new JsonResponse(['status' => 'Reservation annuler!'], Response::HTTP_OK);
+
+        }
 
       /**
         * @Route("/reservation/update/{id}", name="update_reservation", methods={"PUT"})
@@ -140,6 +164,23 @@ class ReservationController extends AbstractController
         }
          return new JsonResponse(['status' => 'Reservation is updated !'], Response::HTTP_OK);
         }
+        /**
+        * @Route("/reservation/changeLocal/{id}", name="change_Local", methods={"PUT"})
+        */
+        public function changeLocal($id, Request $request): JsonResponse
+       {
+         $data = json_decode($request->getContent(), true);
+         $result=$this->reservationService->changeLocal($id, $data);
+
+        if($result == -2){
+            return new JsonResponse(['status' => 'nreservation dosnt exist!'], Response::HTTP_FORBIDDEN);
+        }
+        if($result == -1){
+            return new JsonResponse(['status' => 'new User dosnt exist!'], Response::HTTP_FORBIDDEN);
+        }
+         return new JsonResponse(['status' => 'Reservation is updated !'], Response::HTTP_OK);
+        }
+        
 
 
 

@@ -149,6 +149,15 @@ class LocalService{
         $result =  json_decode($jsonContent ,true);       
         return $result ;
         }
+        public function getById($id){
+            if(empty($id)){
+                return null;
+            }
+           $local = $this->localRepository->findBy(
+                  ['id' => $id]
+              );     
+          return $local ;
+          }
         public function addTarifs($id,$data){
             $local = $this->localRepository->findOneBy(['id' => $id]);
             $tarif=new Tarif();
