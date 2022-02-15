@@ -6,7 +6,7 @@ use App\Entity\Reservation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
-
+use PhpParser\Node\Expr\Cast\String_;
 
 /**
  * @method Reservation|null find($id, $lockMode = null, $lockVersion = null)
@@ -40,6 +40,8 @@ class ReservationRepository extends ServiceEntityRepository
        $this->manager->persist($reservation);
        $this->manager->flush();
     } 
+    
+    
     // /**
     //  * @return Reservation[] Returns an array of Reservation objects
     //  */

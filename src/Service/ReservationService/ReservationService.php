@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use App\Service\ReservationDetailService\ReservationDetailService;
 use App\Service\UserService\UserService;
 use App\Service\LocalService\LocalService;
+use PhpParser\Node\Expr\Cast\Array_;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -17,6 +18,7 @@ class ReservationService  {
         private $userService;
         private $userRepository;
         private $localService;
+
 
         public function __construct(ReservationRepository $reservationRepository , ReservationDetailService $reservationDetailService,LocalService $localService, UserService $userService, UserRepository $userRepository)
         {
@@ -81,7 +83,7 @@ class ReservationService  {
             $serializer = $this->serialiser();
             $jsonContent = $serializer->serialize($reservation, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
             'dateReservation', 'total','member'=>['id','numAdesion'], 
-            'resesrvationDetails' =>['id','dateDebut','dateFin','prixCalcule','local'=>['id','type'=>['label']],'nbrAdulte','nbrEnfant']
+            'resesrvationDetails' =>['id','dateDebut','dateFin','prixCalcule','local'=>['id','nom','type'=>['label']],'nbrAdulte','nbrEnfant']
             ]]);
             $result =  json_decode($jsonContent ,true);
             return $result;
@@ -132,8 +134,7 @@ class ReservationService  {
         }
         public function findByEtat($etat){
             $reservations = $this->reservationRepository->findBy(
-                ['etat' => $etat],
-        
+                ['etat' => $etat]
             );
             
             foreach ($reservations as $value){ 
@@ -151,6 +152,25 @@ class ReservationService  {
             $result =  json_decode($jsonContent ,true);
             return $result;
         }
+        public function findByEtatAndType($etat,$typeLocal){
+            $reservations =$this->findByEtat($etat);
+            $reservationsByType=array();
+            foreach ($reservations as $value){ 
+                $local=$this->localService->findById($value['resesrvationDetails'][0]['local']['id']);
+                $typeValue=$local[0]['type']['label'];
+                if($typeValue==$typeLocal){
+                    array_push($reservationsByType,$value);
+                }
+                
+              } 
+            $serializer = $this->serialiser();
+            $jsonContent = $serializer->serialize($reservationsByType, 'json', [AbstractNormalizer::ATTRIBUTES => ['id',
+            'dateReservation', 'total','etat','member'=>['id','numAdesion'], 
+            'resesrvationDetails' =>['id','dateDebut','dateFin','prixCalcule','local'=>['id']]
+            ]]);
+            $result =  json_decode($jsonContent ,true);
+            return $result;
+        }
         
         public function update($id,$data){
             $reservation = $this->reservationRepository->findOneBy(['id' => $id]);
@@ -160,6 +180,19 @@ class ReservationService  {
             else{
             $reservation
                      ->setTotal($data);
+            $this->reservationRepository->update($reservation);
+            return 1;
+        }
+        }
+        public function changeLocal($id,$data){
+            $reservation = $this->reservationRepository->findOneBy(['id' => $id]);
+            $local=$this->localService->getById($data["id"]);
+            if($reservation == null){
+                return -2;
+            }
+            else{
+            $reservation
+                     ->getResesrvationDetails()[0]->setLocal($local[0]);
             $this->reservationRepository->update($reservation);
             return 1;
         }
@@ -188,6 +221,18 @@ class ReservationService  {
             return 1;
         }
         }
+        public function annulerReservation($id){
+            $reservation = $this->reservationRepository->findOneBy(['id' => $id]);
+            if($reservation == null){
+                return -2;
+            }
+            else{
+            $reservation
+                     ->setEtat(3);
+            $this->reservationRepository->update($reservation);
+            return 1;
+        }
+    }
 
 
 }
